@@ -23,7 +23,7 @@ export class StockManageComponent implements OnInit {
   }
 
   update(stock: Stock) {
-    this.router.navigateByUrl('/stockform/'+stock.id);
+    this.router.navigateByUrl('/stockform/'+ stock.id);
   }
 
 }

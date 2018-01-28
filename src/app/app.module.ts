@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 
 
 import { AppComponent } from './app.component';
@@ -37,7 +39,10 @@ const routeConfig: Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routeConfig, {useHash: true})
+    HttpModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(routeConfig, {useHash: true}),
   ],
   providers: [StockService],
   bootstrap: [AppComponent]

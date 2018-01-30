@@ -11,16 +11,42 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 export class StockFormComponent implements OnInit {
 
   formModel: FormGroup;
-  stock: Stock;
+  stock: Stock = new Stock(0, '', 0, 0, '', []); // 因为请求stock是异步的，所以要先复初始值，防止绑定数据的时候undefined
   categories = ['IT', '互联网', '金融'];
 
   constructor(private routeInfo: ActivatedRoute, private stockService: StockService, private router: Router) { }
 
   ngOnInit() {
     const stockId = this.routeInfo.snapshot.params['id'];
-    this.stock = this.stockService.getStock(stockId);
 
     const fb = new FormBuilder();
+    this.formModel = fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      price: ['', Validators.required],
+      desc: [''],
+      categories: fb.array([
+        new FormControl(false),
+        new FormControl(false),
+        new FormControl(false),
+      ], this.categoriesSelectValidator)
+    });
+
+    // this.stock = this.stockService.getStock(stockId);
+    this.stockService.getStock(stockId).subscribe(data => { // 异步返回后，重新更新数据
+      this.stock = data;
+      this.formModel.reset({
+        name: data.name,
+        price: data.price,
+        desc: data.desc,
+        categories: [
+          data.categories.indexOf(this.categories[0]) !== -1,
+          data.categories.indexOf(this.categories[1]) !== -1,
+          data.categories.indexOf(this.categories[2]) !== -1
+        ]
+      });
+    });
+
+    /* const fb = new FormBuilder();
     this.formModel = fb.group({
       name: [this.stock.name, [Validators.required, Validators.minLength(3)]],
       price: [this.stock.price, Validators.required],
@@ -30,7 +56,7 @@ export class StockFormComponent implements OnInit {
         new FormControl(this.stock.categories.indexOf(this.categories[1]) !== -1),
         new FormControl(this.stock.categories.indexOf(this.categories[2]) !== -1),
       ], this.categoriesSelectValidator)
-    });
+    }); */
   }
 
   categoriesSelectValidator(control: FormArray) {

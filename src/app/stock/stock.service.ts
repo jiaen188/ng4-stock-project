@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class StockService {
 
-  constructor() { }
+  constructor(public http: Http) { }
 
-  private stocks: Stock[] = [
+  /* private stocks: Stock[] = [
     new Stock(1, '第一只股票', 1.99, 3.5, '这是第一只股票，是我在学习慕课网angular入门实战时创建的', ['IT', '互联网']),
     new Stock(2, '第二只股票', 2.99, 4.5, '这是第二只股票，是我在学习慕课网angular入门实战时创建的', ['金融']),
     new Stock(3, '第三只股票', 3.99, 2.5, '这是第三只股票，是我在学习慕课网angular入门实战时创建的', ['IT']),
@@ -14,13 +16,17 @@ export class StockService {
     new Stock(6, '第六只股票', 6.99, 3.5, '这是第六只股票，是我在学习慕课网angular入门实战时创建的', ['金融']),
     new Stock(7, '第七只股票', 7.99, 3.5, '这是第七只股票，是我在学习慕课网angular入门实战时创建的', ['IT', '金融']),
     new Stock(8, '第八只股票', 8.99, 4.5, '这是第八只股票，是我在学习慕课网angular入门实战时创建的', ['金融', '互联网'])
-  ];
+  ]; */
 
-  getStocks(): Stock[] {
+  /* getStocks(): Stock[] {
     return this.stocks;
+  } */
+
+  getStocks(): Observable<Stock[]> {
+    return this.http.get('/api/stock').map(res => res.json());
   }
 
-  getStock(id: number): Stock {
+  /* getStock(id: number): Stock {
     // tslint:disable-next-line:no-shadowed-variable
     // tslint:disable-next-line:triple-equals
     let stock = this.stocks.find(stock => stock.id == id);
@@ -28,6 +34,10 @@ export class StockService {
       stock = new Stock(0, '', 0, 0, '', []);
     }
     return stock;
+  } */
+
+  getStock(id: number): Observable<Stock> {
+    return this.http.get('/api/stock/' + id).map(res => res.json());
   }
 
 }
